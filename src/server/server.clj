@@ -11,10 +11,7 @@
    [uix.dom.server :as dom.server])
   (:gen-class))
 
-(defn index
-  ([]
-   (index ""))
-  ([inner]
+(defn index [inner]
    (str
     "<!DOCTYPE html>"
     (h/html
@@ -29,7 +26,7 @@
          [:body
           [:div#root
            (raw-string inner)]
-          [:script {:src "/js/main.js"}]]]))))
+          [:script {:src "/js/main.js"}]]])))
 
 (defn home-page [_]
   {:status 200
