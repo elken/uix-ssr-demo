@@ -15,27 +15,29 @@
   ([]
    (index ""))
   ([inner]
-   (h/html
-    [:html.no-js {:lang "en"}
-     [:head
-      [:meta {:charset "utf-8"}]
-      [:meta {:http-equiv "x-ua-compatible"
-              :content "ie=edge"}]
-      [:meta {:name "description" :content ""}]
-      [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
-      [:title "Uix SSR Demo"]]
-     [:body
-      [:div#root
-       (raw-string inner)]
-      [:script {:src "/js/main.js"}]]])))
+   (str
+    "<!DOCTYPE html>"
+    (h/html
+        [:html.no-js {:lang "en"}
+         [:head
+          [:meta {:charset "utf-8"}]
+          [:meta {:http-equiv "x-ua-compatible"
+                  :content "ie=edge"}]
+          [:meta {:name "description" :content ""}]
+          [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
+          [:title "Uix SSR Demo"]]
+         [:body
+          [:div#root
+           (raw-string inner)]
+          [:script {:src "/js/main.js"}]]]))))
 
 (defn home-page [_]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body
-   (let [markup (dom.server/render-to-static-markup ($ ui/title-bar))
-         page (str (index markup))]
-     (str page))})
+   (-> ($ ui/title-bar)
+       dom.server/render-to-static-markup
+       index)})
 
 (def app
   (ring/ring-handler
