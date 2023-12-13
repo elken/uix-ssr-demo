@@ -1,0 +1,21 @@
+{:deps
+ {org.clojure/clojure {:mvn/version "1.11.1"}
+  org.clojure/clojurescript {:mvn/version "1.11.121"}
+  ring/ring-core {:mvn/version "1.10.0"}
+  ring/ring-jetty-adapter {:mvn/version "1.10.0"}
+  metosin/reitit-ring {:mvn/version "0.7.0-alpha7"}
+  hiccup/hiccup {:mvn/version "2.0.0-RC2"}
+  com.pitch/uix.core {:mvn/version "1.0.1"}
+  com.pitch/uix.dom {:mvn/version "1.0.1"}}
+
+ :paths ["src" "resources"]
+
+ :aliases
+ {:dev {:extra-paths ["dev"]
+        :extra-deps
+        {ring/ring-devel {:mvn/version "1.6.3"}
+         nrepl/nrepl {:mvn/version "1.1.0"}
+         refactor-nrepl/refactor-nrepl {:mvn/version "3.9.1"}
+         cider/cider-nrepl {:mvn/version "0.44.0"}}
+        :main-opts
+        ["-m" "server.server"]}}}
