@@ -1,0 +1,64 @@
+#+title: UIX SSR Demo
+#+author: Ellis Kenyő
+#+date: \today
+#+latex_class: chameleon
+
+A simple application demonstrating how to use [[https://pitch-io.github.io/uix/docs/server-side-rendering.html][SSR]] with Uix.
+
+It's recommended to read through those docs to familiarize yourself with the
+setup, but essentially we have 3 components working together to provide the
+application.
+
+** [[file:src/server/main.clj][Server]]
+We have a very simple ring server whose sole purpose is to:
+
+- Return our hydrated markup by default on all endpoints (a lazy choice to make the app as simple
+  as possible, *DON'T DO THIS IN PRODUCTION*).
+
+  The reason we're using =var-get= and =resolve= here rather than just calling the
+  component directly is so we get a /reference/ to the value rather than the value
+  itself, so when our reload middleware reloads; we also get the latest markup.
+
+- Attempt to return a resource found in a folder called ="public"= on our
+  classpath (which is where our static resources live, =resources/public=)
+
+- Wrap some reload middleware around that to ensure that any file saves trigger
+  the ring server to reload. This is done to ensure that the server always
+  returns the correct component HTML
+
+With some extra niceties for a REPL environment.
+
+** [[file:src/app/ui.cljc][App]]
+A shared cljc namespace of our components. In here you write components as you
+would regularly, you just have to be aware of things like hooks not running on
+the server; and the idea that these components are rendered on the server /first/
+so you have to make sure to guard away things like JS interop like so (from the
+Uix docs linked above)
+
+#+begin_src clojure
+(defui title-bar []
+  ($ :div.title-bar
+     ($ :h1 "Hello")
+     ;; js/console.log doesn't exist on JVM, thus the code
+     ;; should be included only for ClojureScript
+     ($ :button {:on-click #?(:cljs #(js/console.log %)
+                              :clj nil)}
+        "+")))
+#+end_src
+
+** [[file:src/client/main.cljs][Client]]
+A cljs namespace of the client hydrating the React root from the server. The
+more simplistic explanation is:
+
+- Server renders the DOM to a string
+
+- Server sends that generated markup along with the index.html (important to
+  note here that the typical ~<div id="root"></div>~ element is still required to
+  be present, the rest of the DOM is a child of that)
+
+- The index.html also includes a script tag to load this client bundle; which
+  will hydrate the root we setup and load the /client/ version of the page on top
+
+All we need to do on the client side then is hydrate our ="root"= node and we're done.
+
+Also included is a [[https://github.com/elken/uix-ssr-demo/blob/master/src/client/preload.cljs][preload]] namespace to setup react-refresh, giving us client-only local state persistence.
