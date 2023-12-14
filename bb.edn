@@ -1,0 +1,12 @@
+{:min-bb-version "0.4.0"
+ :tasks {:requires ([babashka.fs :as fs])
+          -check-node-modules (when-not (fs/exists? "node_modules")
+                               (shell "npm i"))
+         server {:doc "Run the SSR server"
+                 :task (clojure "-M:dev" "-m" "server.main")}
+         client {:depends [-check-node-modules]
+                 :doc "Run the client"
+                 :task (shell "npm run dev")}
+         -dev {:depends [server client]}
+         dev {:doc "Run both tasks in parallel"
+              :task (run '-dev {:parallel true})}}}

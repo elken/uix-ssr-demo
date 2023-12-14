@@ -9,6 +9,32 @@ It's recommended to read through those docs to familiarize yourself with the
 setup, but essentially we have 3 components working together to provide the
 application.
 
+* Running
+In order to get started, you have to ensure you have the following tools installed:
+
+- [[https://clojure.org/guides/install_clojure][clojure]]
+- Some version of Java
+- yarn/npm/pnpm (the =bb= script uses npm but you can just run the task manually)
+
+If you want to use the =bb= script to make it easier to run tasks, then also
+, otherwise use the following commands:
+
+If you prefer not to use the =bb= script, then use the following commands
+
+#+begin_src shell
+clj -M:dev -m server.main # Server
+npm run dev               # Client (assumes npm, replace with however your js package manager would run the dev task)
+#+end_src
+
+Otherwise install [[https://book.babashka.org/#getting_started][babashka]] and use the following:
+
+#+begin_src shell
+bb server # Server
+bb client # Client, assumes npm but you can adjust as needed
+bb dev    # Run both in parallel (make sure you wait for the server to startup too)
+#+end_src
+
+* Components
 ** [[file:src/server/main.clj][Server]]
 We have a very simple ring server whose sole purpose is to:
 
