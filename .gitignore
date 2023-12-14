@@ -21,3 +21,4 @@ pom.xml.asc
 .shadow-cljs
 
 resources/public/js
+resources/public/css/style.css
