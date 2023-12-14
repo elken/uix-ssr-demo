@@ -1,4 +1,4 @@
-(ns client.client
+(ns client.main
   (:require [uix.core :refer [$]]
             [uix.dom :as dom.client]
             [app.ui :as ui]))

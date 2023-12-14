@@ -11,6 +11,6 @@
  {:app {:output-dir "resources/public/js"
         :asset-path "/js"
         :target :browser
-        :modules {:main {:init-fn client.client/init}}
+        :modules {:main {:init-fn client.main/init}}
         :devtools {:watch-dir "resources/public"
                    :preloads [client.preload]}}}}

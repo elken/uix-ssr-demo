@@ -1,4 +1,4 @@
-(ns server.server
+(ns server.main
   (:require
    [app.ui]
    [cider.nrepl :refer [cider-nrepl-handler]]
