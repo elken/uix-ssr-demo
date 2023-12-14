@@ -1,9 +1,10 @@
 (ns server.server
   (:require
-   [app.ui :as ui]
+   [app.ui]
    [cider.nrepl :refer [cider-nrepl-handler]]
    [nrepl.server :as nrepl]
-   [reitit.ring :as ring]
+   [ring.middleware.resource :refer [wrap-resource]]
+   [ring.middleware.reload :refer [wrap-reload]]
    [ring.adapter.jetty :as jetty]
    [hiccup2.core :as h]
    [hiccup.util :refer [raw-string]]
@@ -11,44 +12,39 @@
    [uix.dom.server :as dom.server])
   (:gen-class))
 
-(defn index [inner]
-   (str
-    "<!DOCTYPE html>"
-    (h/html
-        [:html.no-js {:lang "en"}
-         [:head
-          [:meta {:charset "utf-8"}]
-          [:meta {:http-equiv "x-ua-compatible"
-                  :content "ie=edge"}]
-          [:meta {:name "description" :content ""}]
-          [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
-          [:title "Uix SSR Demo"]]
-         [:body
-          [:div#root
-           (raw-string inner)]
-          [:script {:src "/js/main.js"}]]])))
+(defonce server (atom nil))
 
-(defn home-page [_]
+(defn index [inner]
+  (str
+     "<!DOCTYPE html>"
+     (h/html
+         [:html.no-js {:lang "en"}
+          [:head
+           [:meta {:charset "utf-8"}]
+           [:meta {:http-equiv "x-ua-compatible" :content "ie=edge"}]
+           [:meta {:name "description" :content ""}]
+           [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
+           [:title "SSR"]
+           [:link {:rel "stylesheet" :href (str "/css/style.css?v=" (System/currentTimeMillis))}]]
+          [:body
+           [:div#root (raw-string inner)]
+           [:script {:src "/js/main.js"}]]])))
+
+(defn render-app [_]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body
-   (-> ($ ui/title-bar)
+   (-> ($ (var-get (resolve 'app.ui/app)))
        dom.server/render-to-static-markup
        index)})
 
-(def app
-  (ring/ring-handler
-    (ring/router
-     [["/" {:get home-page}]])
-    (ring/routes
-     (ring/create-resource-handler {:path "/"})
-     (ring/create-default-handler))))
-
-(defonce server (atom nil))
-
 (defn start-server []
   (reset! server
-          (jetty/run-jetty #'app {:port 3000 :join? false}))
+          (jetty/run-jetty
+           (-> #'render-app
+               (wrap-resource "public")
+               wrap-reload)
+           {:port 3000 :join? false}))
   (println "Server started on port 3000"))
 
 (defn stop-server []
@@ -67,4 +63,14 @@
   (println "nREPL server started on port 1881"))
 
 (comment
+  ;; View component HTML
+  (dom.server/render-to-static-markup
+   ($ (var-get (resolve 'app.ui/app))))
+
+  ;; View page HTML
+  (-> ($ (var-get (resolve 'app.ui/app)))
+      dom.server/render-to-static-markup
+      index)
+
+  ;; Restart the server process
   (restart-server))

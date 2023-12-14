@@ -11,11 +11,9 @@
  :paths ["src" "resources"]
 
  :aliases
- {:dev {:extra-paths ["dev"]
-        :extra-deps
-        {ring/ring-devel {:mvn/version "1.6.3"}
-         nrepl/nrepl {:mvn/version "1.1.0"}
-         refactor-nrepl/refactor-nrepl {:mvn/version "3.9.1"}
-         cider/cider-nrepl {:mvn/version "0.44.0"}}
-        :main-opts
-        ["-m" "server.server"]}}}
+ {:dev
+  {:extra-paths ["dev"]
+   :extra-deps
+   {ring/ring-devel {:mvn/version "1.6.3"}
+    nrepl/nrepl {:mvn/version "1.1.0"}
+    cider/cider-nrepl {:mvn/version "0.44.0"}}}}}
