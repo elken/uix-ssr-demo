@@ -3,6 +3,8 @@
 #+date: \today
 #+latex_class: chameleon
 
+[[file:.github/assets/demo.png]]
+
 A simple application demonstrating how to use [[https://pitch-io.github.io/uix/docs/server-side-rendering.html][SSR]] with Uix.
 
 It's recommended to read through those docs to familiarize yourself with the
