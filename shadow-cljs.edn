@@ -3,9 +3,7 @@
  :dependencies
  [[com.pitch/uix.core "1.0.1"]
   [com.pitch/uix.dom "1.0.1"]
-  [binaryage/devtools "1.0.7"]
-  [com.adamrenklint/preo "0.1.0"]
-  [cider/cider-nrepl "0.44.0"]]
+  [binaryage/devtools "1.0.7"]]
 
  :builds
  {:app {:output-dir "resources/public/js"
@@ -13,4 +11,5 @@
         :target :browser
         :modules {:main {:init-fn client.main/init}}
         :devtools {:watch-dir "resources/public"
-                   :preloads [client.preload]}}}}
+                   :preloads [client.preload
+                              devtools.preload]}}}}
